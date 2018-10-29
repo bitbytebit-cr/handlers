@@ -197,6 +197,9 @@ func buildCommonLogLine(req *http.Request, url url.URL, ts time.Time, status int
 // ts is the timestamp with which the entry should be logged.
 // status and size are used to provide the response HTTP status and size.
 func writeLog(writer io.Writer, params LogFormatterParams) {
+	if params.StatusCode == 200 {
+		return
+	}
 	buf := buildCommonLogLine(params.Request, params.URL, params.TimeStamp, params.StatusCode, params.Size)
 	buf = append(buf, '\n')
 	writer.Write(buf)
@@ -206,6 +209,9 @@ func writeLog(writer io.Writer, params LogFormatterParams) {
 // ts is the timestamp with which the entry should be logged.
 // status and size are used to provide the response HTTP status and size.
 func writeCombinedLog(writer io.Writer, params LogFormatterParams) {
+	if params.StatusCode == 200 {
+		return
+	}
 	buf := buildCommonLogLine(params.Request, params.URL, params.TimeStamp, params.StatusCode, params.Size)
 	buf = append(buf, ` "`...)
 	buf = appendQuoted(buf, params.Request.Referer())
